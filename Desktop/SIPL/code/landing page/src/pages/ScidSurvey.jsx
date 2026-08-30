@@ -16,10 +16,17 @@ export default function ScidSurvey() {
 
   useEffect(() => {
     fetch("/api/scid/questions")
-      .then((r) => r.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load SCID questions (${response.status})`)
+        }
+        return response.json()
+      })
       .then(setData)
+      .catch(() => setData({ error: true }))
   }, [])
 
+  if (data?.error) return <div className="p-6 text-red-600">Unable to load SCID questions. Please try again later.</div>
   if (!data) return <div className="p-6">Loading SCID questions…</div>
 
   const handle = (id, val) => setResponses((s) => ({ ...s, [id]: String(val) }))

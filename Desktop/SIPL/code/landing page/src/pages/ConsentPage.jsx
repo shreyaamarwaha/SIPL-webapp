@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export default function ConsentPage() {
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function ConsentPage() {
           </div>
 
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/survey")}
             className="text-[#2d7ff9] font-medium text-[0.98rem] flex items-center gap-2"
           >
             ← Back

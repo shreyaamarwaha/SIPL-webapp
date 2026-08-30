@@ -25,11 +25,18 @@ export default function SeveritySurvey() {
   const [report, setReport] = useState(null)
   const [flowStep, setFlowStep] = useState("questions")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loadError, setLoadError] = useState(null)
 
   useEffect(() => {
     fetch("/api/severity/questions")
-      .then((r) => r.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load questions (${response.status})`)
+        }
+        return response.json()
+      })
       .then(setData)
+      .catch((error) => setLoadError(error.message))
   }, [])
 
   const allQuestions = useMemo(() => {
@@ -137,6 +144,24 @@ export default function SeveritySurvey() {
       ? `${result.phq9.severity_band} depression and ${result.gad7.severity_band.toLowerCase()} anxiety symptoms based on the latest screening result.`
       : ""
 
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center px-6">
+        <div className="max-w-lg rounded-2xl border border-[#f3c7c7] bg-white p-8 text-center shadow-sm">
+          <h1 className="text-2xl font-semibold text-[#1f2d3d] mb-3">Unable to load assessment</h1>
+          <p className="text-[#52627a] mb-6">{loadError}</p>
+          <button
+            type="button"
+            onClick={() => navigate("/survey/profile")}
+            className="px-6 py-3 rounded-xl bg-[#2d7ff9] text-white font-semibold hover:bg-[#236fe0] transition-colors"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (!data) {
     return (
       <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center text-[#1f2d3d] text-xl font-medium">
@@ -156,8 +181,17 @@ export default function SeveritySurvey() {
             </div>
 
             <button
-              onClick={() => navigate("/survey/profile")}
-              className="text-[#2d7ff9] font-medium text-[0.98rem] flex items-center gap-2"
+              type="button"
+              disabled={currentIndex === 0}
+              onClick={() => {
+                if (currentIndex === 0) return
+                navigate("/survey/profile")
+              }}
+              className={`font-medium text-[0.98rem] flex items-center gap-2 ${
+                currentIndex === 0
+                  ? "text-[#b8c5d6] cursor-not-allowed"
+                  : "text-[#2d7ff9]"
+              }`}
             >
               ← Back
             </button>
@@ -166,25 +200,7 @@ export default function SeveritySurvey() {
 
         <main className="max-w-[1100px] mx-auto px-4 md:px-6 py-10 md:py-14">
           <div className="max-w-[900px] mx-auto">
-            <div className="flex items-center gap-4 md:gap-6 max-w-[720px] mb-6">
-              {[1, 2, 3].map((step, index) => (
-                <div key={step} className="flex items-center flex-1 min-w-0">
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border-2 text-base md:text-lg font-semibold transition-colors ${
-                      step === 3
-                        ? "border-[#2d7ff9] bg-[#2d7ff9] text-white shadow-[0_0_0_4px_rgba(45,127,249,0.12)]"
-                        : "border-[#d1dbe8] bg-white text-[#58677a]"
-                    }`}
-                  >
-                    {step}
-                  </div>
-                  {index < 2 && <div className="h-[2px] flex-1 mx-3 md:mx-4 bg-[#dfeaf5]" />}
-                </div>
-              ))}
-            </div>
-
-            <div className="mb-6 flex items-center justify-between text-[#6a7b90] text-[0.8rem] uppercase tracking-[0.2em] font-medium">
-              <span>Step 3 of 3</span>
+            <div className="mb-6 flex items-center justify-end text-[#6a7b90] text-[0.8rem] uppercase tracking-[0.2em] font-medium">
               <span>{answeredCount}/{allQuestions.length} answered</span>
             </div>
 

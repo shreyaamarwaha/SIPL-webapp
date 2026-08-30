@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { Button } from "./Button"
 
 export function CtaSection() {
@@ -9,9 +10,11 @@ export function CtaSection() {
           The assessment takes approximately 8–10 minutes. Answer honestly and in your own words —
           there are no right or wrong responses.
         </p>
-        <Button variant="primary" size="lg">
-          Start Assessment
-        </Button>
+        <Link to="/survey">
+          <Button variant="primary" size="lg">
+            Start Assessment
+          </Button>
+        </Link>
       </div>
     </section>
   )
