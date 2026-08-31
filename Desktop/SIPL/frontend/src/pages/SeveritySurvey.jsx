@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { apiUrl } from "../lib/api"
 
 const scaleLabels = {
   0: "Not at all",
@@ -28,7 +29,7 @@ export default function SeveritySurvey() {
   const [loadError, setLoadError] = useState(null)
 
   useEffect(() => {
-    fetch("/api/severity/questions")
+    fetch(apiUrl("/severity/questions"))
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to load questions (${response.status})`)
@@ -77,7 +78,7 @@ export default function SeveritySurvey() {
     const session_id = crypto.randomUUID()
     const body = { session_id, phq9_responses: phq9, gad7_responses: gad7 }
 
-    fetch("/api/severity/screen", {
+    fetch(apiUrl("/severity/screen"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -94,7 +95,7 @@ export default function SeveritySurvey() {
     if (!result) return
 
     const sessionId = result.session_id
-    fetch("/api/report/combined", {
+    fetch(apiUrl("/report/combined"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

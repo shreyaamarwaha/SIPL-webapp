@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: mindscreen-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn ml.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: CORS_ORIGINS
+        value: "*"
+
+  - type: web
+    name: mindscreen-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: mindscreen-api
+          envVarKey: RENDER_EXTERNAL_URL
