@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { apiUrl } from "../apiConfig"
 
 function Option({ name, value, checked, onChange, label }) {
   return (
@@ -15,7 +16,7 @@ export default function ScidSurvey() {
   const [result, setResult] = useState(null)
 
   useEffect(() => {
-    fetch("/api/scid/questions")
+    fetch(apiUrl("/api/scid/questions"))
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to load SCID questions (${response.status})`)
@@ -34,7 +35,7 @@ export default function ScidSurvey() {
   const submit = async () => {
     const session_id = crypto.randomUUID()
     const body = { session_id, responses }
-    const res = await fetch("/api/scid/screen", {
+    const res = await fetch(apiUrl("/api/scid/screen"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
