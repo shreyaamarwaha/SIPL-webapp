@@ -2,7 +2,7 @@ services:
   - type: web
     name: mindscreen-api
     runtime: python
-    rootDir: backend
+    rootDir: Desktop/SIPL/backend
     buildCommand: pip install -r requirements-prod.txt
     startCommand: uvicorn ml.api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -15,7 +15,7 @@ services:
   - type: web
     name: mindscreen-web
     runtime: static
-    rootDir: frontend
+    rootDir: Desktop/SIPL/frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
