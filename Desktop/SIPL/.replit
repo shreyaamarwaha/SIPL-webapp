@@ -1,0 +1,22 @@
+# Replit configuration for MindScreen
+
+# Main entry point - run the backend
+run = "cd backend && python -m uvicorn ml.api.main:app --host 0.0.0.0 --port 8000"
+
+# Commands available to run
+[commands]
+backend = "cd backend && python -m uvicorn ml.api.main:app --host 0.0.0.0 --port 8000"
+frontend = "cd frontend && npm install && npm run dev"
+both = "cd backend && python -m uvicorn ml.api.main:app --host 0.0.0.0 --port 8000 &"
+
+# Environment
+language = "python3"
+
+# Packages
+[packager]
+afterInstall = "cd backend && pip install -r requirements.txt && cd ../frontend && npm install"
+ignoredPaths = ["node_modules", "__pycache__", ".venv"]
+
+# Replit Nix environment
+[nix]
+channel = "stable-23_11"
